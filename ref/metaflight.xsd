@@ -1,0 +1,1888 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XML Spy v4.4 U (http://www.xmlspy.com) by d (PWR Systems) -->
+<!-- edited with XMLSPY v2004 rel. 3 U (http://www.xmlspy.com) by James Testerman (Computer Associates) -->
+<!-- copyright 2002-2003 MultiGen Paradigm, Inc.-->
+<xsd:schema targetNamespace="urn://www.multigen-paradigm.com/MetaFlight" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="urn://www.multigen-paradigm.com/MetaFlight" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.0">
+	<!--MetaFlight Schema Version 1.3-->
+	<!--Change History 	
+	!Important! The only xsd attributes allowed are ‘name’ and ‘refTo’, everything else must be an element. 		 	
+	02/05/02 : RCW :  		
+	- Added <SchemaCopyright> as a required string element of <Database> and its only value is restricted to "MetaFlight Schema V1.3 - Copyright 2006-2007 MultiGen Paradigm, Inc." 		- Added <SubstitutionTexture> as a required element of <VirtualTextureDataset> 		
+	- Added <ImageFormat> as a required element of <ImageAttributes> 		
+	- Removed  Choice for CoordSys and Datasets 	09/30/02: RCW: 		
+	- Changed scope of Model from Database to ModelListDataset 		
+	- Removed CoordSysUsed from Dataset and moved it to GridDataSet 		
+	- Removed FeatureType and MasterSchemaFile from VectorGridDataset 	
+	
+	10/29/02: RCW: 		
+	- Added optional FileFormat string to GridDatasetType 		
+	- Change ImageFormat to Optional 	
+	
+	11/07/02:  JDT 		
+	- Added ModelAttributes and ModelComponents to give FlightIG customers  Model/Entity support 	
+	
+	9/30/03:  JDT 		
+	-Added RGBColorType 		
+	-Added RGBColor element 		
+	-Added RGBColor to GridLevel 		
+	-Added StateMapType 		
+	-Added StateMapLevelType 		
+	-Added StateMapLevelRowType 		
+	-Added StateMapType element called ExistenceMap to the GridStackType 		
+	-Added ZLibDataType 		
+	-Added State element 		
+	-Added MetaFlightVersionMajor 		
+	-Added MetaFlightVersionMinor 	
+	
+	4/29/04:  JDT 		
+	-Added PixelOrigin Type  		
+	-Added PixelOrigin to ImageGridDatasetType 	
+	
+	10/20/04: JDT 		
+	-Made the dataset Volume and Path optional 	
+	
+	11/08/04: JDT: 		
+	- Added SPARSE_SUBSTITUTIVE to the HierarchyType enumeration
+		
+	11/09/05 JDT
+	- Added Material Layer Table to Image Grid and Virtual Texture Datasets
+	-->
+	<!--Global definitions-->
+	<xsd:complexType name="Color">
+		<xsd:annotation>
+			<xsd:documentation>Type for RGBA Colors</xsd:documentation>
+		</xsd:annotation>
+		<xsd:choice minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="r">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:decimal">
+						<xsd:minInclusive value="0.0"/>
+						<xsd:maxInclusive value="1.0"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="g">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:decimal">
+						<xsd:minInclusive value="0.0"/>
+						<xsd:maxInclusive value="1.0"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="b">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:decimal">
+						<xsd:minInclusive value="0.0"/>
+						<xsd:maxInclusive value="1.0"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="a">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:decimal">
+						<xsd:minInclusive value="0.0"/>
+						<xsd:maxInclusive value="1.0"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:choice>
+	</xsd:complexType>
+	<xsd:complexType name="Bitmask">
+		<xsd:annotation>
+			<xsd:documentation>Type for 32-bit mask</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:integer"/>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="XyzType">
+		<xsd:annotation>
+			<xsd:documentation>Type for 3D Positions or Distance in  x y z</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="x" type="xsd:double"/>
+			<xsd:element name="y" type="xsd:double"/>
+			<xsd:element name="z" type="xsd:double"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Position">
+		<xsd:annotation>
+			<xsd:documentation>Type for 3D Positions in  x y z</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="x" type="xsd:double"/>
+			<xsd:element name="y" type="xsd:double"/>
+			<xsd:element name="z" type="xsd:double"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Position2D">
+		<xsd:annotation>
+			<xsd:documentation>Type for 2D Positions in  x y</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="x" type="xsd:double"/>
+			<xsd:element name="y" type="xsd:double"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="PositionLonLat">
+		<xsd:annotation>
+			<xsd:documentation>Type for 2D Positions in  Lon Lat </xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="lon" type="xsd:double"/>
+			<xsd:element name="lat" type="xsd:double"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="FileNamePatternType">
+		<xsd:annotation>
+			<xsd:documentation>Type for File naming schemas</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string"/>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="FileNameType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Filenames, which may be relative to a Root Path.  Note that Environment Variable substitution can happen on this Type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string"/>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="DirNameType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Directory Names only.   Note that Environment Variable substitution can happen on this Type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string"/>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="StatemapType">
+		<xsd:annotation>
+			<xsd:documentation>Type for design, selection, and existence maps</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Compression" type="xsd:string" default="zlib 1.1.4" minOccurs="0"/>
+			<xsd:element ref="StatemapLevel" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="ZLibDataType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Compressed ZLib Data</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string"/>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	<xsd:complexType name="StatemapLevelRowType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Statemap Level Row Data</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="ID" type="xsd:integer"/>
+			<xsd:element name="State" type="xsd:string" default="AS" minOccurs="0"/>
+			<xsd:element name="Data" type="ZLibDataType" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="StatemapLevelType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Compressed Statemap Level Data</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="ID" type="xsd:integer"/>
+			<xsd:element name="State" type="xsd:string" default="AS" minOccurs="0"/>
+			<xsd:element name="Row" type="StatemapLevelRowType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="RGBColorType">
+		<xsd:annotation>
+			<xsd:documentation>Type for RGB Colors with vals between 0 and 255</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="r" type="xsd:integer"/>
+			<xsd:element name="g" type="xsd:integer"/>
+			<xsd:element name="b" type="xsd:integer"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="MaterialLayerType">
+		<xsd:sequence>
+			<xsd:element name="Material" type="xsd:integer"/>
+			<xsd:element name="CognitiveColor" type="RGBColorType"/>
+			<xsd:element name="MaterialName" type="xsd:string"/>
+			<xsd:element name="StyleName" type="xsd:string"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="MaterialLayerTableType">
+		<xsd:sequence>
+			<xsd:element ref="MaterialLayer" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="ProjectedCoordSysType">
+		<xsd:annotation>
+			<xsd:documentation>Type for projected spatial reference system</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="CoordSysType">
+				<xsd:sequence>
+					<xsd:element ref="FalseOrigin" minOccurs="0"/>
+					<xsd:element ref="VerticalDatum" minOccurs="0"/>
+					<xsd:element ref="HorizontalDatumUsed" minOccurs="0"/>
+					<xsd:choice>
+						<xsd:element ref="Stereographic"/>
+						<xsd:element ref="AlbersEqualAreaConic"/>
+						<xsd:element ref="UTM"/>
+						<xsd:element ref="LambertConicConformal"/>
+						<xsd:element ref="FlatEarth"/>
+						<xsd:element ref="Trapezoidal"/>
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="NonProjectedCoordSysType">
+		<xsd:annotation>
+			<xsd:documentation>Type for non-projected spatial reference system</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="CoordSysType">
+				<xsd:sequence>
+					<xsd:element ref="VerticalDatum" minOccurs="0"/>
+					<xsd:element ref="HorizontalDatumUsed" minOccurs="0"/>
+					<xsd:element ref="GeoType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="CoordSysType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>Spatial reference system</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="UnitsCategory"/>
+			<xsd:element ref="HorizontalUnitType"/>
+			<xsd:element ref="VerticalUnitType"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="ProjectionType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>A base class for all projections</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="Description" minOccurs="0"/>
+			<xsd:element ref="Source" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="AlbersEqualAreaConicProjType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Albers Equal Area Conic</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ProjectionType">
+				<xsd:sequence>
+					<xsd:element ref="OriginLatitude"/>
+					<xsd:element ref="OriginLongitude"/>
+					<xsd:element ref="LowerLatitude"/>
+					<xsd:element ref="UpperLatitude"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="LambertConicConformalProjType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Lambert Conformal Conic Projection</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ProjectionType">
+				<xsd:sequence>
+					<xsd:element ref="OriginLatitude"/>
+					<xsd:element ref="OriginLongitude"/>
+					<xsd:element ref="LowerLatitude"/>
+					<xsd:element ref="UpperLatitude"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="FlatEarthProjType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Flat Earth projection</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ProjectionType">
+				<xsd:sequence>
+					<xsd:element ref="OriginLatitude"/>
+					<xsd:element ref="OriginLongitude"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="UTMProjType">
+		<xsd:annotation>
+			<xsd:documentation>Type for UTM projection</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ProjectionType">
+				<xsd:sequence>
+					<xsd:element ref="Zone"/>
+					<xsd:element ref="Hemisphere"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="TrapezoidalType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Trapesoidal Projection</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ProjectionType">
+				<xsd:sequence>
+					<xsd:element ref="OriginLatitude"/>
+					<xsd:element ref="OriginLongitude"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="DatasetType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>A base class for all datasets  Datasets have a name attribute that is used as the object identifier, which comes from either the DatasetName or DatasetTitle, depending on the value of DatasetNameMapping</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="DatasetName"/>
+			<xsd:element ref="DatasetTitle"/>
+			<xsd:element ref="Description" minOccurs="0"/>
+			<xsd:element ref="Volume" minOccurs="0"/>
+			<xsd:element ref="RootPath" minOccurs="0"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="GridDatasetType" abstract="true">
+		<xsd:annotation>
+			<xsd:documentation>A base class for all gridded datasets</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DatasetType">
+				<xsd:sequence>
+					<xsd:element ref="FileFormat" minOccurs="0"/>
+					<xsd:element ref="CoordSysUsed"/>
+					<xsd:element ref="GridStack"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="GeometryGridDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>Type for GeometryGridDataset </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="GridDatasetType">
+				<xsd:sequence>
+					<xsd:element ref="HierarchyType"/>
+					<xsd:element ref="MasterPaletteFile" minOccurs="0"/>
+					<xsd:element ref="SwitchDistanceTableUsed" minOccurs="0"/>
+					<xsd:element ref="ModelListDatasetUsed" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element ref="GeometryGridLevel" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="VirtualTextureDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Virtual Texture Dataset</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="GridDatasetType">
+				<xsd:sequence>
+					<xsd:element ref="ImageAttributes"/>
+					<xsd:element ref="NumVirtualTexels"/>
+					<xsd:element ref="NumTileTexels"/>
+					<xsd:element ref="SubstitutionTexture" minOccurs="0"/>
+					<xsd:element ref="PixelOrigin" minOccurs="0"/>
+					<xsd:element ref="MaterialLayerTable" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="ImageGridDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Image Grid Dataset</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="GridDatasetType">
+				<xsd:sequence>
+					<xsd:element ref="ImageAttributes"/>
+					<xsd:element ref="ImageHeight"/>
+					<xsd:element ref="ImageWidth"/>
+					<xsd:element ref="PixelOrigin"/>
+					<xsd:element ref="MaterialLayerTable" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="VectorGridDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>Type for VectorGridDataset</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="GridDatasetType">
+				<xsd:sequence>
+					<xsd:element ref="VectorGridLevel" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="GeneralGridDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>Type for GeneralGridDataset</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="GridDatasetType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="ModelListDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>Type for ModelListDataset</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DatasetType">
+				<xsd:sequence>
+					<xsd:element ref="MasterPaletteFile" minOccurs="0"/>
+					<xsd:element ref="Model" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="GeneralListDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>Type for GeneralListDataset</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="DatasetType">
+				<xsd:sequence>
+					<xsd:element ref="FileName" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="DofValueType">
+		<xsd:annotation>
+			<xsd:documentation>base type for Dof values</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="Min" type="xsd:double" default="0.0"/>
+			<xsd:element name="Max" type="xsd:double" default="360.0"/>
+			<xsd:element name="Value" type="xsd:double"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ModelComponentType">
+		<xsd:annotation>
+			<xsd:documentation>Base type for all Node Level Metadata</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element ref="ID" minOccurs="0"/>
+			<xsd:element name="Comment" type="xsd:string" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Comment from the node</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element ref="CatalogAttribute" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="NonGeoreferencedCoordSysType">
+		<xsd:annotation>
+			<xsd:documentation>Type for non-geographic, non-georeferenced Coordinate System</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="CoordSysType">
+				<xsd:sequence>
+					<xsd:element ref="UpForwardAxis"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<xsd:complexType name="StereographicProjType">
+		<xsd:annotation>
+			<xsd:documentation>Type for Stereographic projection</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="ProjectionType">
+				<xsd:sequence>
+					<xsd:element ref="OriginLatitude"/>
+					<xsd:element ref="OriginLongitude"/>
+					<xsd:element ref="ScaleLatitude"/>
+					<xsd:element ref="ScaleK0"/>
+					<xsd:element ref="UseScaleK0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	<!--End of global definitions -->
+	<!--Reference Types-->
+	<xsd:complexType name="DatasetType.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Type of all Dataset References/Links</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="refTo" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="VirtualTextureDataset.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Type for References to VirtualTextureDatasets/Links</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="refTo" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="GeometryGridDataset.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Type for References to GeometryGridDatasets/Links</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="refTo" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="ModelListDataset.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Type of all ModelListDataset References/Links</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="refTo" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="CoordSysType.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Type for all CoordSys  References/Links</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="refTo" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="Coverage.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Type for all Coverage References/Links</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="refTo" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="GridStructure.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Type for all GridStructure References/Links</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="refTo" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="Ellipsoid.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Type for al lEllipsoid  References/Links</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="refTo" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="SwitchDistanceTable.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Type for all SwitchDistanceTable References/Links</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="refTo" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="SwitchDistance.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Type for all SwitchDistance References/Links</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="refTo" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<xsd:complexType name="Model.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Type for all Model References/Links</xsd:documentation>
+		</xsd:annotation>
+		<xsd:attribute name="refTo" type="xsd:string" use="required"/>
+	</xsd:complexType>
+	<!--End of Reference Types-->
+	<xsd:element name="MaterialLayer">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="MaterialLayerType"/>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="MaterialLayerTable">
+		<xsd:annotation>
+			<xsd:documentation>Only exists on MTL1 datasets.  Defines the mapping from a material to a Sensor material name, display color and Style Name.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="MaterialLayerTableType"/>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="State" default="AS">
+		<xsd:annotation>
+			<xsd:documentation>Statemap Level and Row state: AS=ALL SET, AC=ALL CLEAR, M=MIXED</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="AS"/>
+				<xsd:enumeration value="AC"/>
+				<xsd:enumeration value="M"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="StatemapLevel" type="StatemapLevelType">
+		<xsd:annotation>
+			<xsd:documentation>Statemap Level</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ExistenceMap" type="StatemapType">
+		<xsd:annotation>
+			<xsd:documentation>Existence map for Grided Datasets</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="RGBColor" type="RGBColorType">
+		<xsd:annotation>
+			<xsd:documentation>RGB Color</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Description" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>Short description</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Source" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>Where the algorithm came from</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="NumVirtualTexels" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>Total Number of Texels in a virtual texture. Business Rule:  Must be an even power of 2</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="NumTileTexels" default="512">
+		<xsd:annotation>
+			<xsd:documentation>Number of Texels on a Virtual Texture Tile edge.  Business Rule: Virtual Texture Tiles must be square</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:integer">
+				<xsd:enumeration value="256"/>
+				<xsd:enumeration value="512"/>
+				<xsd:enumeration value="1024"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="ImageHeight" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>Number of pixels in Y</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ImageWidth" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>Number of pixels in X</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="PixelOrigin" default="LL_OPENGL_PIXELORIGIN_TYPE">
+		<xsd:annotation>
+			<xsd:documentation>Where the 0,0 Origin for the image CS starts</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="LL_OPENGL_PIXELORIGIN_TYPE"/>
+				<xsd:enumeration value="UL_DIRECTX_PIXELORIGIN_TYPE"/>
+				<xsd:enumeration value="LR_PIXELORIGIN_TYPE"/>
+				<xsd:enumeration value="UR_PIXELORIGIN_TYPE"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="Zone">
+		<xsd:annotation>
+			<xsd:documentation>UTM Zone 1 - 60  - Defines the central meridian (projection origin longitude east of Greenwich) to be used in the TM projection.  For UTM, the projection origin latitude is always 0 (at the equator).</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:integer">
+				<xsd:minInclusive value="1"/>
+				<xsd:maxInclusive value="60"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="NumLevels" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>Number of Levels in a Grid Structure</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="NumRowDivisions" type="xsd:integer" default="1">
+		<xsd:annotation>
+			<xsd:documentation>Number of Divisions of a cell in the Y direction, also known as Ratio Row</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="NumColDivisions" type="xsd:integer" default="1">
+		<xsd:annotation>
+			<xsd:documentation>Number of Divisions of a cell in the X direction, also known as Ratio Col</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="OriginLatitude" type="xsd:double">
+		<xsd:annotation>
+			<xsd:documentation>Projection origin (lat)</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="OriginLongitude" type="xsd:double">
+		<xsd:annotation>
+			<xsd:documentation>Projection origin (lon)</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="LowerLatitude" type="xsd:double">
+		<xsd:annotation>
+			<xsd:documentation>First Standard Parallel</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="UpperLatitude" type="xsd:double">
+		<xsd:annotation>
+			<xsd:documentation>Secondary Standard Parallel</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ScaleLatitude" type="xsd:double">
+		<xsd:annotation>
+			<xsd:documentation>Relative scale factor along a parallel of latitude (k)</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ScaleK0" type="xsd:double">
+		<xsd:annotation>
+			<xsd:documentation>Central scale factor (k0)</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="SemiMajorRadius" type="xsd:double">
+		<xsd:annotation>
+			<xsd:documentation>Ellipsoid Radius at the equator</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="SemiMinorRadius" type="xsd:double">
+		<xsd:annotation>
+			<xsd:documentation>Ellipsoid Radius at the pole</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="DatumShift" type="Position">
+		<xsd:annotation>
+			<xsd:documentation>This is a shift from the WGS84 center.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="FalseOrigin" type="Position">
+		<xsd:annotation>
+			<xsd:documentation>The shift of the Projection Origin to a Local Origin. Do not confuse this with a UTM Zone false easting or northing.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Extent" type="Position2D">
+		<xsd:annotation>
+			<xsd:documentation>Size of a coverage in x and y</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Origin" type="Position2D">
+		<xsd:annotation>
+			<xsd:documentation>Origin of a coverage in x and y</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="SubstitutionTexture" type="FileNameType">
+		<xsd:annotation>
+			<xsd:documentation>References a lower resolution texture for use in place of VitrualTexture</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="MasterPaletteFile" type="FileNameType">
+		<xsd:annotation>
+			<xsd:documentation>Master file that contains texture palette for the dataset</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="FileNamePattern" type="FileNamePatternType">
+		<xsd:annotation>
+			<xsd:documentation>String that defines the naming convention of gridded file collection</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="FileName" type="FileNameType">
+		<xsd:annotation>
+			<xsd:documentation>The file name part of a path</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Volume" type="DirNameType">
+		<xsd:annotation>
+			<xsd:documentation>The root of the directory hierarchy. This is used to specify a disk drive, machine, and so on. This part of the path is dependent on a particular machine's setup (such as the drive letter assigned to a mounted drive).</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="RootPath" type="DirNameType">
+		<xsd:annotation>
+			<xsd:documentation>The root directory within the volume where the files reside. All files in the dataset will share the same root path. There may be additional subdirectories below the root path.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="DatasetName" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>Name used to uniquely identify a Dataset within a Database. This is a required field since this name can be used to do name substitution in a FileNamePattern expansion of $(DSNAME)</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="DatasetTitle" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>Name the user gave the dataset. Need not be unique. This name can be used to identify the Dataset objects so that Datasets can be referenced with version-independent IDs. This supports interchangeable Datasets or publishing updates to Datasets.  DatasetTitle is also use in FileNamePattern expansion of $(DSTITLE)</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Model">
+		<xsd:annotation>
+			<xsd:documentation>A named model.  This provides a level of indirection to a geometry file that defines it.</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="FileName"/>
+				<xsd:element ref="Description" minOccurs="0"/>
+				<xsd:element ref="CatalogAttribute" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="CreationTime" minOccurs="0"/>
+				<xsd:element ref="ModificationTime" minOccurs="0"/>
+				<xsd:element ref="VersionMajor" minOccurs="0"/>
+				<xsd:element ref="VersionMinor" minOccurs="0"/>
+				<xsd:element ref="FileSize" minOccurs="0"/>
+				<xsd:element ref="NumPolygons" minOccurs="0"/>
+				<xsd:element ref="NumTrianglesInHighLOD" minOccurs="0"/>
+				<xsd:element ref="BoundingBox" minOccurs="0"/>
+				<xsd:element ref="Textures" minOccurs="0"/>
+				<xsd:element ref="ModelComponents" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="HorizontalUnitType" default="METERS">
+		<xsd:annotation>
+			<xsd:documentation>Business Rule:
+
+LINEAR_DISTANCE Units Category has METERS as base Units
+and can have the following Horizontal_Units enums:
+METERS - conversion factor to METERS = 1.0
+FEET -  conversion factor to METERS = 3.28084
+INCHES - conversion factor to METERS = 39.37008 = 3.28084 * 12
+KILOMETERS - conversion factor to METERS = 0.001
+CENTIMETERS - conversion factor to METERS = 100.0
+MILLIMETERS - conversion factor to METERS = 1000.0
+NAUTICAL_MILES -  conversion factor to METERS = 0.000539967 = 3.28084 / 6076
+MILES -  conversion factor to METERS = 0.000621371 = 3.28084 / 5280
+
+ANGULAR_DISTANCE Units Category has DEGREES as base Units
+and can have the following Horizontal_Units enums:
+DEGREES - conversion factor to DEGREES = 1.0
+RADIANS - conversion factor to DEGREES = 0.017453293 = PI / 180
+MINUTES - conversion factor to DEGREES = 60.0
+SECONDS - conversion factor to DEGREES = 3600.0
+ARCMINUTES - conversion factor to DEGREES = 60.0
+ARCSECONDS - conversion factor to DEGREES = 3600.0</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="METERS"/>
+				<xsd:enumeration value="FEET"/>
+				<xsd:enumeration value="INCHES"/>
+				<xsd:enumeration value="KILOMETERS"/>
+				<xsd:enumeration value="CENTIMETERS"/>
+				<xsd:enumeration value="MILLIMETERS"/>
+				<xsd:enumeration value="NAUTICAL_MILES"/>
+				<xsd:enumeration value="MILES"/>
+				<xsd:enumeration value="DEGREES"/>
+				<xsd:enumeration value="RADIANS"/>
+				<xsd:enumeration value="MINUTES"/>
+				<xsd:enumeration value="SECONDS"/>
+				<xsd:enumeration value="ARCMINUTES"/>
+				<xsd:enumeration value="ARCSECONDS"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="VerticalUnitType" default="METERS">
+		<xsd:annotation>
+			<xsd:documentation>This is by as the Horizontal Linear distance</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="METERS"/>
+				<xsd:enumeration value="FEET"/>
+				<xsd:enumeration value="INCHES"/>
+				<xsd:enumeration value="KILOMETERS"/>
+				<xsd:enumeration value="CENTIMETERS"/>
+				<xsd:enumeration value="MILLIMETERS"/>
+				<xsd:enumeration value="NAUTICAL_MILES"/>
+				<xsd:enumeration value="MILES"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="TileType" default="GROUP">
+		<xsd:annotation>
+			<xsd:documentation>This emun identifies how the tile is implemented in OpenFilght files or the scene graph.
+values:
+FILE_GEOM - indicates that a file exists with the same cell coordinates (level, col, row) as the tile and that there is geometry for the tile at this level.
+FILE_LOD_GEOM - indicates that a file exists with the same cell coordinates (level, col, row) as the tile and that the geometry for the tile is parented by a LOD node at this level.
+LOD_GEOM - indicates that the geometry for tiles at this level are parented by a LOD node but that there are not files for the tiles at this level. That means that these tiles must be stored in parent files.
+FILE_GROUP - indicates that a file exists with the same cell coordinates (level, col, row) as the tile but there is NO geometry for the tile at this level. That is, a group node represents the tile area and parents the tiles at children levels, but no geometry exists at that level. Once the tiles are loaded into a scene graph, the file is, of course, no longer relevant. 
+GROUP - indicates that no file nor geometry exists for the tile, only a group node to parent the child tiles. This provides for levels of aggregation used in culling the scene graph.
+</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="GROUP"/>
+				<xsd:enumeration value="FILE_LOD_GEOM"/>
+				<xsd:enumeration value="LOD_GEOM"/>
+				<xsd:enumeration value="FILE_GROUP"/>
+				<xsd:enumeration value="FILE_GEOM"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="LocalizedType" default="LOCALIZED">
+		<xsd:annotation>
+			<xsd:documentation>Describes how the tile coordinates at this gridlevel are offset</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="LOCALIZED"/>
+				<xsd:enumeration value="LOCALIZED_DEPENDENT"/>
+				<xsd:enumeration value="UNLOCALIZED"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="HierarchyType" default="ADDITIVE">
+		<xsd:annotation>
+			<xsd:documentation>Describes the LOD organization.
+ADDITIVE: Child sub-tiles of a given tile supplement the geometry of the tile, such that both the parent and all children are visible at the same time. This could be used to add more detail to culture tiles, for example. 
+SUBSTITUTIVE: Child sub-tiles of a given tile replace the geometry of the tile, such that either the parent or its children are visible at any given time, but not both.  All possible children tiles must exist for the parent to switch out and the children to switch in.
+SPARSE_SUBSTITUTIVE:  The same as SUBSTITUTIVE except that only one of the children tiles has to exist for the parent to switch out and the children to switch in.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="ADDITIVE"/>
+				<xsd:enumeration value="SUBSTITUTIVE"/>
+				<xsd:enumeration value="SPARSE_SUBSTITUTIVE"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="Hemisphere" default="NORTH">
+		<xsd:annotation>
+			<xsd:documentation>North or South hemisphere - Defines the False Northing for a UTM zone.  If SOUTH, the false northing is 10000000, else 0.  For UTM, the False Easting is always 500000.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="NORTH"/>
+				<xsd:enumeration value="SOUTH"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="VerticalDatum" default="MSL">
+		<xsd:annotation>
+			<xsd:documentation>How Elevations have been measured </xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="MSL"/>
+				<xsd:enumeration value="WGS84_GEOID"/>
+				<xsd:enumeration value="ELLIPSOID"/>
+				<xsd:enumeration value="UNDEFINED"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="CoordSysUsed" type="CoordSysType.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Link or reference to a potentially shared Coordinate System definition</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="CoverageUsed" type="Coverage.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Link or reference to Coverage</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="SwitchOut_DistanceUsed" type="SwitchDistance.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Link or index into switch-out distance in the SwitchDistanceTable of this Dataset for this Grid Level</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="SwitchIn_DistanceUsed" type="SwitchDistance.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Link or index to switch-in distance of this Grid Level</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="GridStructureUsed" type="GridStructure.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Link or reference to the GridStructure </xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="HorizontalDatumUsed" type="Ellipsoid.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Reference to horizontal datum</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ModelListDatasetUsed" type="ModelListDataset.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Reference to a ModelList Dataset that contains model cross-referenced from the terrain in the dataset</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="SwitchDistanceTableUsed" type="SwitchDistanceTable.Ref">
+		<xsd:annotation>
+			<xsd:documentation>Reference to table used by a dataset.  Business Rule:  A dataset must have one of these if it has references to values within the table</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="GeometryGridLevel">
+		<xsd:annotation>
+			<xsd:documentation>Contains data specific to a geometry hierarchy grid level, such as switch distances and tile localization information.</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="TileType"/>
+				<xsd:element ref="LocalizedType"/>
+				<xsd:element ref="SwitchOut_DistanceUsed" minOccurs="0"/>
+				<xsd:element ref="SwitchIn_DistanceUsed" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Ellipsoid">
+		<xsd:annotation>
+			<xsd:documentation>Ellipsoid model</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="SemiMajorRadius"/>
+				<xsd:element ref="SemiMinorRadius"/>
+				<xsd:element ref="DatumShift" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="ProjectedCoordSys" type="ProjectedCoordSysType">
+		<xsd:annotation>
+			<xsd:documentation>Projected Coordinate System</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="NonProjectedCoordSys" type="NonProjectedCoordSysType">
+		<xsd:annotation>
+			<xsd:documentation>Non-Projected (Geographic) Whole Earth Coordinate System</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="NonGeoreferencedCoordSys" type="NonGeoreferencedCoordSysType">
+		<xsd:annotation>
+			<xsd:documentation>Non-geographic non-georeferenced Coordinate System, also known as Local Body, Local Cartesian, and Local Space Rectangular (LSR). This is Creator's default coordinate system for a model.</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="AlbersEqualAreaConic" type="AlbersEqualAreaConicProjType">
+		<xsd:annotation>
+			<xsd:documentation>Classification: Conic, Equal area 
+ Aspects: Polar, oblique 
+ Earth Shape: Sphere, Ellipsoid 
+ True Scale: At parallel through center, between standard parallels</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="LambertConicConformal" type="LambertConicConformalProjType">
+		<xsd:annotation>
+			<xsd:documentation>Classification: Conic, Conformal
+ Aspects: Normal
+ Earth Shape: Sphere, Ellipsoid
+ True Scale: At central parallell</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="FlatEarth" type="FlatEarthProjType">
+		<xsd:annotation>
+			<xsd:documentation>Classification: Cylindrical, Perspective, neither conformal nor equal area
+Aspects: Equatorial
+Earth Shape: Sphere
+True Scale: At equator and all meridians
+Also known as Flat Earth, Plate Carree, Equirectangular, and Scaled Geographic</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Stereographic" type="StereographicProjType">
+		<xsd:annotation>
+			<xsd:documentation> Classification: Azimuthal, Conformal
+ Aspects: Polar, oblique, and equatorial
+ Earth Shape: Sphere, Ellipsoid
+ True Scale: At center
+</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="UTM" type="UTMProjType">
+		<xsd:annotation>
+			<xsd:documentation>Classification: Cylindrical, Conformal, special transverse Mercator
+ Aspects: Normal
+ Earth Shape: Ellipsoid
+ True Scale: Along two straight lines (not meridians!) equidistant to the central meridian.  UTM is a family of projections (predefined instances of TM projections) that are based on the Transverse Mercator projection. In these projections, the ellipsoid is divided into 60 longitudinal zones of 6 degrees each.  The X value, called the easting, has a value of 500,000 m at the central meridian of each zone.  The Y value, called the northing, has a value of 0 m at the equator for the northern hemisphere, increasing toward the north pole, and a value of 10,000,000 m at the equator for the southern hemisphere, decreasing toward the south pole.  The (TM) point scale factor along the central meridian is 0.9996.</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Trapezoidal" type="TrapezoidalType">
+		<xsd:annotation>
+			<xsd:documentation>Classification: Pseudocylindrical, equal area
+ Aspects: Normal
+ Earth Shape: Sphere
+Note: this is a variant of EquidistantCylindrical where a new convergence is calculated with every Lat</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Coverage">
+		<xsd:annotation>
+			<xsd:documentation>The spatial extents of the database</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CoordSysUsed"/>
+				<xsd:element ref="Origin"/>
+				<xsd:element ref="Extent"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="GridStructure">
+		<xsd:annotation>
+			<xsd:documentation>Reuseable grid stack structure</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="NumLevels"/>
+				<xsd:element ref="StartingLevel"/>
+				<xsd:element ref="GridLevel" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="GridLevel">
+		<xsd:annotation>
+			<xsd:documentation>Grid Level Attributes</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="LevelName" minOccurs="0"/>
+				<xsd:element ref="NumColDivisions"/>
+				<xsd:element ref="NumRowDivisions"/>
+				<xsd:element ref="RGBColor" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="StartingLevel" type="xsd:integer" default="0">
+		<xsd:annotation>
+			<xsd:documentation>Grid Structure Level to start on, which provides a short cut to a particular level</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="GridStack">
+		<xsd:annotation>
+			<xsd:documentation>The grid stack owned by a gridded dataset</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="GridStructureUsed"/>
+				<xsd:element ref="CoverageUsed"/>
+				<xsd:element ref="FileNamePattern"/>
+				<xsd:element ref="ExistenceMap" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="SwitchDistanceTable">
+		<xsd:annotation>
+			<xsd:documentation>A table, containing swtch values, that can be potentially shared by multiple GeometryGridDatasets.</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="SwitchDistance" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="SwitchDistance">
+		<xsd:annotation>
+			<xsd:documentation>An entry in a switch distance table</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="Value"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Value" type="xsd:double" default="0">
+		<xsd:annotation>
+			<xsd:documentation>Distance value in the coordinate system of the GeometryGridDataset that uses this SwitchDistanceTable</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="GeometryGridDataset" type="GeometryGridDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>Geometry files structured into tiled hierarchy</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="VirtualTextureDataset" type="VirtualTextureDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>A VirtualTextureDataset is used to describe the metat data for an image pyramid also known as image clipstack.  The GridStructure used on a VirtualTextureDataset must have log2(NumVirtualTexels)+1 levels. Level 0 must have exactly 1 texel. Each increasing level must have 2  times the number of texels  (along the edge) . The first log2(NumVirtualTexels)+1 levels, called the pyramid levels,  must have only 1 tile. Each subsequent level must have 2 times as many columns and rows of tiles . FileName pattern cannot include any geographic name tokens, as a result of this rule VirtualTextureDataset can not have the following tokens in the FileNamePattern: 
+LATDEG
+LATMIN
+LATSEC
+LATSEC10
+LONDEG
+LONMIN
+LONSEC
+LONSEC10
+SWLATDEG
+SWLONDEG</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ImageGridDataset" type="ImageGridDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>Regular (non-virtual) gridded image dataset</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="NumComponents" default="1">
+		<xsd:annotation>
+			<xsd:documentation>Number of channels in image</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:integer">
+				<xsd:enumeration value="1"/>
+				<xsd:enumeration value="2"/>
+				<xsd:enumeration value="3"/>
+				<xsd:enumeration value="4"/>
+				<xsd:enumeration value="5"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="BitsPerComponent" default="8">
+		<xsd:annotation>
+			<xsd:documentation>Number of bits per  pixel</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:integer">
+				<xsd:enumeration value="5"/>
+				<xsd:enumeration value="8"/>
+				<xsd:enumeration value="16"/>
+				<xsd:enumeration value="32"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="ImageAttributes">
+		<xsd:annotation>
+			<xsd:documentation>Image attributes of a Vitural Texture or of a regular  Image</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="NumComponents"/>
+				<xsd:element ref="BitsPerComponent"/>
+				<xsd:element ref="ImageFormat"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="VectorGridDataset" type="VectorGridDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>Dataset for vector feature files</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="GeneralGridDataset" type="GeneralGridDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>General-purpose gridded dataset</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ModelListDataset" type="ModelListDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>The list of models for entities or cultural features</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="GeneralListDataset" type="GeneralListDatasetType">
+		<xsd:annotation>
+			<xsd:documentation>Base List Dataset</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="VersionMajor" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>A version number describing database content, which should be incremented if there are major changes</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="MetaFlightVersionMajor" type="xsd:integer" default="1">
+		<xsd:annotation>
+			<xsd:documentation>Current Major Version number of the MetaFlight schema</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="MetaFlightVersionMinor" type="xsd:integer" default="2">
+		<xsd:annotation>
+			<xsd:documentation>Current Minor Version number of the MetaFlight schema</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="UnitsCategory" default="ANGULAR_DISTANCE">
+		<xsd:annotation>
+			<xsd:documentation>Enumeration of ANGULAR_DISTANCE or LINEAR_DISTANCE</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="ANGULAR_DISTANCE"/>
+				<xsd:enumeration value="LINEAR_DISTANCE"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="GeoType" default="GEODETIC">
+		<xsd:annotation>
+			<xsd:documentation>GEODETIC: Lat, Lon, Elevation; Lat is measured from equatorial plane. GEOCENTRIC: 3D world coordinate system; X,Y,Z, with Z through the North Pole, X through the Greenwich meridian at the equator, and Y completes a right-handed system</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="GEODETIC"/>
+				<xsd:enumeration value="GEOCENTRIC"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="UpForwardAxis" default="Z_UP_Y_FORWARD">
+		<xsd:annotation>
+			<xsd:documentation>How a coordinate system is oriented. By default, Z is up and Y is forward. Forward defines the normal direction of motion for moving models and the fronts of buildings.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="Z_UP_Y_FORWARD"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="DatasetNameMapping" default="USE_DATASET_NAME">
+		<xsd:annotation>
+			<xsd:documentation>How Dataset object identifiers (for example, Dataset name attribute) are made.  Dataset object identifiers within a Database can be generated from the DatasetName or from the DatasetTitle.The values of this enumeration reflect the two choices: USE_DATASET_NAME  or USE_DATASET_TITLE.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="USE_DATASET_NAME"/>
+				<xsd:enumeration value="USE_DATASET_TITLE"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="VersionMinor" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>Minor Version, which increments with  minor changes</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="PublicationDate" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>Date content was published or delivered</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="RecipientName" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>Name of customer</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="RecipientOrganization" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>The name of the recipient's organization</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="RecipientProject" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>The name of the recipient's project</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="FeatureTagDescription" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>This parameter is used to attribute the MetaFlight Dataset with a clue as to the meaning of the Feature Tag values used in Culture Projection, and should be exposed for all Geometry Grid Datasets. For example, if the you use the “FEATURE_REF_NUM” shapefile attribute as the feature tag, then this description field would be used to communicate that. (Future versions will get this information from the Dataset attributes.) This should be a reference to a Dataset in the same manner as Vega Prime references a dataset.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="LevelName" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>User-supplied Grid Structure Level Name. LevelName is used in FileNamePattern expansion of $(LEVELNAME) when iterating over a GridStack.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="UseScaleK0" type="xsd:boolean">
+		<xsd:annotation>
+			<xsd:documentation>If set , the projection is using ScaleK0; if not set, the projection is using ScaleLatitude</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ImageFormat" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>Formats currently supported: SGI, TIFF, GIF, JPEG, PCX, IFF, TGA, ALIAS, BMP, TDA, AMP, 5551, 8888, 888, 88, 8, 16, PPM, PMG, CEL, WAVE</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="SchemaCopyright" default="MetaFlight Schema V1.3 - Copyright 2006-2007 MultiGen Paradigm, Inc.">
+		<xsd:annotation>
+			<xsd:documentation>Copyright notice of Schema, which must appear in all metaflight files.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="MetaFlight Schema V1.3 - Copyright 2006-2007 MultiGen Paradigm, Inc."/>
+				<xsd:enumeration value="MetaFlight Schema V1.2 - Copyright 2002-2003 MultiGen Paradigm, Inc."/>
+				<xsd:enumeration value="MetaFlight Schema V1.0 - Copyright 2001-2002 MultiGen Paradigm, Inc."/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="FileFormat" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>String that is the File Format extension.  This is for use in the FileNamePattern target of $(FILEFORMAT) in file name expansion.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="CycleRate" type="xsd:double">
+		<xsd:annotation>
+			<xsd:documentation>Initial Value of Sequence Rate.  This is the time between frames.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="SwitchState">
+		<xsd:annotation>
+			<xsd:documentation>Switch Value to control which child, selected by SwitchState@name, is controled.</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="SwitchStateMask" minOccurs="0"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="SwitchStateMask" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>Traversal Mask fot this SwitchState.  This interpreted as a String of "1" and "0"  that is an abritrary length of bits.  This correlates to the OpenFlight switch mask. </xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="CreationTime" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>Time/Date the file was created for the first time.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ModificationTime" type="xsd:string">
+		<xsd:annotation>
+			<xsd:documentation>Time/Date the file was last modified</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="FileSize" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>Total file size on disk in bytes of all of this Model's texture files.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Count" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>Number of textures</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Memory" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>Memory in bytes needed to store all of this Model's textures</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Texture">
+		<xsd:annotation>
+			<xsd:documentation>Texture entry</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="FileName"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Textures">
+		<xsd:annotation>
+			<xsd:documentation>Textures Referenced in this Model</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="Count"/>
+				<xsd:element ref="Memory"/>
+				<xsd:element ref="FileSize"/>
+				<xsd:element ref="Texture" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="NumTrianglesInHighLOD" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>Number of triangles (facets) in the highest level of detail representation.  Metadata on each lod is stored under the lod.</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="CycleMode" default="FORWARD">
+		<xsd:annotation>
+			<xsd:documentation>FORWARD: Run forward 
+BACKWARD: Run in reverse.  
+SWING: Run forward then reverse to make one cycle.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="FORWARD"/>
+				<xsd:enumeration value="BACKWARD"/>
+				<xsd:enumeration value="SWING"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="CycleCount" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>The number of cycles to run.  -1 means to run indefinitly</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Min" type="XyzType"/>
+	<xsd:element name="Max" type="XyzType"/>
+	<xsd:element name="BoundingBox">
+		<xsd:annotation>
+			<xsd:documentation>Axis alligned minimum bounding rectangle</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="Min"/>
+				<xsd:element ref="Max"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="CatalogAttribute">
+		<xsd:annotation>
+			<xsd:documentation>Attributes typically add detail to classification.</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="CatalogType"/>
+				<xsd:element name="AttributeCode" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>The Attribute Code is the attribute tag from a particular classification system.  Fo rsystems that do not use tagged values a tag from another system can be used provided a mapping exists or a tag can be defined from the field name.</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element name="AttributeValue" type="xsd:string">
+					<xsd:annotation>
+						<xsd:documentation>Value associated with the Attribute Code</xsd:documentation>
+					</xsd:annotation>
+				</xsd:element>
+				<xsd:element ref="Description"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="NumPolygons" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>Total Number of polygons in graph/subgraph</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="ModelComponents">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+			<xsd:documentation>Contains Model Meta Data that feeds the run time Model Entity proxy component.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="Animation" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="Dof" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="LightPointSystem" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="Lod" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="Sound" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="Switch" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="GeneralModelComponent" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="LightSource" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Lod">
+		<xsd:annotation>
+			<xsd:documentation>Handle to Lod node</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="ModelComponentType">
+					<xsd:sequence>
+						<xsd:element name="In" type="xsd:double"/>
+						<xsd:element name="Out" type="xsd:double"/>
+						<xsd:element name="SignificantSize" type="xsd:double" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>Significant size of the Lod Component</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element ref="NumPolygons"/>
+						<xsd:element name="LOD_Category" type="xsd:string" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>Thematic Grouping of Level of Detail component.  This allows structuring based on LOD_Category</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Dof">
+		<xsd:annotation>
+			<xsd:documentation>Dofs are for Articulated Parts and Attachement Points.  Attachement Points  are dof nodes with no children.</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="ModelComponentType">
+					<xsd:sequence>
+						<xsd:element name="DofValueX" type="DofValueType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>Dof translation in X</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DofValueY" type="DofValueType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>Dof translation in Y</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DofValueZ" type="DofValueType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>Dof translation in Z</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DofValueRotX" type="DofValueType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>Dof rotation in X</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DofValueRotY" type="DofValueType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>Dof rotation in Y</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+						<xsd:element name="DofValueRotZ" type="DofValueType" minOccurs="0">
+							<xsd:annotation>
+								<xsd:documentation>Dof rotation in  Z</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Animation">
+		<xsd:annotation>
+			<xsd:documentation>Animation is to turn on or off an animation (flipbook) sequence.</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="ModelComponentType">
+					<xsd:sequence>
+						<xsd:element ref="CycleRate"/>
+						<xsd:element ref="CycleMode"/>
+						<xsd:element ref="CycleCount"/>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+		<!--define an animation-->
+	</xsd:element>
+	<xsd:element name="Switch">
+		<xsd:annotation>
+			<xsd:documentation>Switch is to control the selection of children of the fltSwitch Container</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="ModelComponentType">
+					<xsd:sequence>
+						<xsd:element ref="SwitchState" minOccurs="0" maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+		<!--define a switch state-->
+	</xsd:element>
+	<xsd:element name="Sound">
+		<xsd:annotation>
+			<xsd:documentation>Sound allows the run-time to control sound (on/off, volume??, ...) </xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="ModelComponentType">
+					<xsd:sequence>
+						<xsd:element name="SoundUsed">
+							<xsd:annotation>
+								<xsd:documentation>Reference to a Sound template. Currentluy this is just a place holder and is not implemented in the OpenFlight loader.</xsd:documentation>
+							</xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="LightSource">
+		<xsd:annotation>
+			<xsd:documentation>LightSource allows the run-time control for Light Sources</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="ModelComponentType"/>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="LightPointSystem">
+		<xsd:annotation>
+			<xsd:documentation>Light allows the run-time to control light systems.  (on/off dim??, ...)</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="ModelComponentType"/>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="GeneralModelComponent">
+		<xsd:annotation>
+			<xsd:documentation>General Model Component</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="ModelComponentType"/>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="CatalogType">
+		<xsd:annotation>
+			<xsd:documentation>The Classification Type identifies the classification system such as DFAD or FACC or EDCS</xsd:documentation>
+		</xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="DFAD"/>
+				<xsd:enumeration value="FACC"/>
+				<xsd:enumeration value="EDCS"/>
+				<xsd:enumeration value="RPRFOM"/>
+				<xsd:enumeration value="DIS"/>
+				<xsd:enumeration value="FLIGHTIG"/>
+				<xsd:enumeration value="OTHER"/>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:element>
+	<xsd:element name="ID" type="xsd:integer">
+		<xsd:annotation>
+			<xsd:documentation>Secondary key used to map to FlightIG</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+	<xsd:element name="Database">
+		<xsd:annotation>
+			<xsd:documentation>Top-level container for MetaFlight Database. Contains list of Datasets and also contains other top-level objects that are referenced (used) and potentially shared.</xsd:documentation>
+			<xsd:appinfo>
+				<cppClass prefix="mf"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="SchemaCopyright"/>
+				<xsd:element ref="VersionMajor"/>
+				<xsd:element ref="VersionMinor"/>
+				<xsd:element ref="PublicationDate" minOccurs="0"/>
+				<xsd:element ref="RecipientName" minOccurs="0"/>
+				<xsd:element ref="RecipientOrganization" minOccurs="0"/>
+				<xsd:element ref="RecipientProject" minOccurs="0"/>
+				<xsd:element ref="FeatureTagDescription" minOccurs="0"/>
+				<xsd:element ref="DatasetNameMapping" minOccurs="0"/>
+				<xsd:element ref="Ellipsoid" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="ProjectedCoordSys" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="NonProjectedCoordSys" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="NonGeoreferencedCoordSys" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="GridStructure" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="Coverage" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="SwitchDistanceTable" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="GeneralListDataset" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="ModelListDataset" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="GeneralGridDataset" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="ImageGridDataset" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="VirtualTextureDataset" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="GeometryGridDataset" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element ref="VectorGridDataset" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="required"/>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="MetaFlightRoot">
+		<xsd:annotation>
+			<xsd:documentation>Root-level container for MetaFlight documents.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element ref="MetaFlightVersionMajor" minOccurs="0"/>
+				<xsd:element ref="MetaFlightVersionMinor" minOccurs="0"/>
+				<xsd:element ref="Database" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="VectorGridLevel">
+		<xsd:annotation>
+			<xsd:documentation>Contains data specific to a vector grid layer such as the source layer name which is stored in the name attribute.</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="SourceLayerName" type="xsd:string"/>
+			</xsd:sequence>
+			<xsd:attribute name="name" type="xsd:string" use="optional"/>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
